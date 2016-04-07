@@ -2258,7 +2258,8 @@ _cairo_ft_scaled_glyph_init (void			*abstract_font,
      * Moreover, none of our backends and compositors currently support
      * color glyphs.  As such, this is currently disabled.
      */
-     load_flags |= FT_LOAD_COLOR;
+     if ((info & CAIRO_SCALED_GLYPH_INFO_COLOR) != 0)
+        load_flags |= FT_LOAD_COLOR;
 #endif
 
     error = FT_Load_Glyph (face,

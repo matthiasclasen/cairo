@@ -843,7 +843,8 @@ composite_glyphs_slowly (void				*_dst,
 	    _cairo_scaled_glyph_index (scaled_glyph) != glyph_index)
 	{
 	    status = _cairo_scaled_glyph_lookup (info->font, glyph_index,
-						 CAIRO_SCALED_GLYPH_INFO_SURFACE,
+						 CAIRO_SCALED_GLYPH_INFO_SURFACE |
+                                                 CAIRO_SCALED_GLYPH_INFO_COLOR,
 						 &scaled_glyph);
 
 	    if (unlikely (status))
@@ -974,7 +975,8 @@ composite_glyphs (void				*_dst,
 	     */
 	    CAIRO_MUTEX_UNLOCK (_cairo_glyph_cache_mutex);
 	    status = _cairo_scaled_glyph_lookup (info->font, index,
-						 CAIRO_SCALED_GLYPH_INFO_SURFACE,
+						 CAIRO_SCALED_GLYPH_INFO_SURFACE |
+						 CAIRO_SCALED_GLYPH_INFO_COLOR,
 						 &scaled_glyph);
 	    CAIRO_MUTEX_LOCK (_cairo_glyph_cache_mutex);
 
@@ -1073,7 +1075,8 @@ composite_one_glyph (void				*_dst,
 
     status = _cairo_scaled_glyph_lookup (info->font,
 					 info->glyphs[0].index,
-					 CAIRO_SCALED_GLYPH_INFO_SURFACE,
+					 CAIRO_SCALED_GLYPH_INFO_SURFACE |
+					 CAIRO_SCALED_GLYPH_INFO_COLOR,
 					 &scaled_glyph);
 
     if (unlikely (status))
@@ -1183,7 +1186,8 @@ composite_glyphs_via_mask (void				*_dst,
 	    _cairo_scaled_glyph_index (scaled_glyph) != glyph_index)
 	{
 	    status = _cairo_scaled_glyph_lookup (info->font, glyph_index,
-						 CAIRO_SCALED_GLYPH_INFO_SURFACE,
+						 CAIRO_SCALED_GLYPH_INFO_SURFACE |
+						 CAIRO_SCALED_GLYPH_INFO_COLOR,
 						 &scaled_glyph);
 
 	    if (unlikely (status)) {
@@ -1300,7 +1304,8 @@ composite_glyphs (void				*_dst,
 	    if (scaled_glyph == NULL ||
 	        _cairo_scaled_glyph_index (scaled_glyph) != glyph_index) {
 	        status = _cairo_scaled_glyph_lookup (info->font, glyph_index,
-						     CAIRO_SCALED_GLYPH_INFO_SURFACE,
+						     CAIRO_SCALED_GLYPH_INFO_SURFACE |
+						     CAIRO_SCALED_GLYPH_INFO_COLOR,
 						     &scaled_glyph);
 
                 if (unlikely (status))
