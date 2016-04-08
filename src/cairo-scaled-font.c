@@ -46,6 +46,10 @@
 #include "cairo-scaled-font-private.h"
 #include "cairo-surface-backend-private.h"
 
+#if CAIRO_HAS_FT_FONT
+#include "cairo-ft-private.h"
+#endif
+
 #if _XOPEN_SOURCE >= 600 || defined (_ISOC99_SOURCE)
 #define ISFINITE(x) isfinite (x)
 #else
@@ -3177,3 +3181,14 @@ cairo_scaled_font_get_font_options (cairo_scaled_font_t		*scaled_font,
     _cairo_font_options_init_copy (options, &scaled_font->options);
 }
 slim_hidden_def (cairo_scaled_font_get_font_options);
+
+cairo_bool_t
+_cairo_scaled_font_has_color (cairo_scaled_font_t *scaled_font)
+{
+#if CAIRO_HAS_FT_FONT
+    return _cairo_ft_scaled_font_has_color (scaled_font);
+#else
+    return FALSE;
+#endif
+}
+
