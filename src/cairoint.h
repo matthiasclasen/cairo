@@ -598,6 +598,9 @@ struct _cairo_scaled_font_backend {
                            long                  offset,
                            unsigned char        *buffer,
                            unsigned long        *length);
+
+    cairo_bool_t
+    (*has_color_glyphs)   (void                 *scaled_font);
 };
 
 struct _cairo_font_face_backend {
@@ -2077,7 +2080,7 @@ _cairo_debug_print_traps (FILE *file, const cairo_traps_t *traps);
 cairo_private void
 _cairo_debug_print_clip (FILE *stream, const cairo_clip_t *clip);
 
-#if 0
+#if 1
 #define TRACE(x) fprintf (stderr, "%s: ", __FILE__), fprintf x
 #define TRACE_(x) x
 #else
