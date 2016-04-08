@@ -911,15 +911,6 @@ _cairo_image_scaled_glyph_fini (cairo_scaled_font_t *scaled_font,
     CAIRO_MUTEX_UNLOCK (_cairo_glyph_cache_mutex);
 }
 
-/* XXX need to get at the cached image */
-typedef struct {
-    void *font_key;
-    void *glyph_key;
-    int   origin_x;
-    int   origin_y;
-    pixman_image_t *image;
-} glyph_t;
-
 static cairo_int_status_t
 composite_glyphs (void				*_dst,
 		  cairo_operator_t		 op,
@@ -964,7 +955,7 @@ composite_glyphs (void				*_dst,
     pg = pglyphs;
     for (i = 0; i < info->num_glyphs; i++) {
 	unsigned long index = info->glyphs[i].index;
-	const glyph_t *glyph;
+	const void *glyph;
 
 	glyph = pixman_glyph_cache_lookup (glyph_cache, info->font, (void *)index);
 	if (!glyph) {
