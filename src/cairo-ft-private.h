@@ -55,6 +55,9 @@ _cairo_scaled_font_is_ft (cairo_scaled_font_t *scaled_font);
 cairo_private unsigned int
 _cairo_ft_scaled_font_get_load_flags (cairo_scaled_font_t *scaled_font);
 
+cairo_private cairo_bool_t
+_cairo_ft_scaled_font_has_color (cairo_scaled_font_t *scaled_font);
+
 CAIRO_END_DECLS
 
 #endif /* CAIRO_HAS_FT_FONT */

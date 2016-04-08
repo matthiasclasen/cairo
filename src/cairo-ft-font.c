@@ -3602,6 +3602,30 @@ _cairo_ft_scaled_font_get_load_flags (cairo_scaled_font_t *scaled_font)
     return ft_scaled_font->ft_options.load_flags;
 }
 
+cairo_bool_t
+_cairo_ft_scaled_font_has_color (cairo_scaled_font_t *scaled_font)
+{
+    cairo_ft_scaled_font_t *ft_scaled_font;
+    cairo_ft_unscaled_font_t *unscaled;
+    FT_Face face;
+    cairo_bool_t has_color;
+
+    if (! _cairo_scaled_font_is_ft (scaled_font))
+	return FALSE;
+
+    ft_scaled_font = (cairo_ft_scaled_font_t *) scaled_font;
+    unscaled = ft_scaled_font->unscaled;
+
+    face = _cairo_ft_unscaled_font_lock_face (unscaled);
+    if (!face)
+      return FALSE;
+
+    has_color = FT_HAS_COLOR (face);
+
+    _cairo_ft_unscaled_font_unlock_face (unscaled);
+    return has_color;
+}
+
 void
 _cairo_ft_font_reset_static_data (void)
 {
