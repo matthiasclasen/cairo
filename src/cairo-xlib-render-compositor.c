@@ -1728,15 +1728,25 @@ composite_glyphs (void				*surface,
     return status;
 }
 
+static cairo_int_status_t (*base_glyphs) (const cairo_compositor_t        *compositor,
+                                          cairo_composite_rectangles_t   *extents,
+                                          cairo_scaled_font_t            *scaled_font,
+                                          cairo_glyph_t                  *glyphs,
+                                          int                             num_glyphs,
+                                          cairo_bool_t                    overlap);
+
 static cairo_int_status_t
-glyphs_unsupported (const cairo_compositor_t        *compositor,
-                    cairo_composite_rectangles_t   *extents,
-                    cairo_scaled_font_t            *scaled_font,
-                    cairo_glyph_t                  *glyphs,
-                    int                             num_glyphs,
-                    cairo_bool_t                    overlap)
+glyphs (const cairo_compositor_t        *compositor,
+        cairo_composite_rectangles_t   *extents,
+        cairo_scaled_font_t            *scaled_font,
+        cairo_glyph_t                  *glyphs,
+        int                             num_glyphs,
+        cairo_bool_t                    overlap)
 {
-    return CAIRO_INT_STATUS_UNSUPPORTED;
+    if (_cairo_scaled_font_has_color (scaled_font))
+        return CAIRO_INT_STATUS_UNSUPPORTED;
+
+    return base_glyphs (compositor, extents, scaled_font, glyphs, num_glyphs, overlap);
 }
 
 
@@ -1763,7 +1773,8 @@ _cairo_xlib_mask_compositor_get (void)
 	compositor.composite_boxes = composite_boxes;
 	compositor.check_composite_glyphs = check_composite_glyphs;
 	compositor.composite_glyphs = composite_glyphs;
-        compositor.base.glyphs = glyphs_unsupported;
+        base_glyphs = compositor.base.glyphs;
+        compositor.base.glyphs = glyphs;
     }
 
     return &compositor.base;
