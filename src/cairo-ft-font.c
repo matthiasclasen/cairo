@@ -168,6 +168,9 @@ struct _cairo_ft_unscaled_font {
     cairo_matrix_t current_shape;
     FT_Matrix Current_Shape;
 
+    unsigned int have_color_set : 1;
+    unsigned int have_color     : 1;  /* true if the font contains color glyphs */
+
     cairo_mutex_t mutex;
     int lock_count;
 
@@ -425,6 +428,9 @@ _cairo_ft_unscaled_font_init (cairo_ft_unscaled_font_t *unscaled,
     if (from_face) {
 	unscaled->from_face = TRUE;
 	_cairo_ft_unscaled_font_init_key (unscaled, TRUE, NULL, 0, face);
+
+        unscaled->have_color = FT_HAS_COLOR (face);
+        unscaled->have_color_set = TRUE;
     } else {
 	char *filename_copy;
 
@@ -436,6 +442,8 @@ _cairo_ft_unscaled_font_init (cairo_ft_unscaled_font_t *unscaled,
 	    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
 	_cairo_ft_unscaled_font_init_key (unscaled, FALSE, filename_copy, id, NULL);
+
+        unscaled->have_color_set = FALSE;
     }
 
     unscaled->have_scale = FALSE;
@@ -702,6 +710,9 @@ _cairo_ft_unscaled_font_lock_face (cairo_ft_unscaled_font_t *unscaled)
     }
 
     unscaled->face = face;
+
+    unscaled->have_color = FT_HAS_COLOR (face);
+    unscaled->have_color_set = TRUE;
 
     font_map->num_open_faces++;
 
@@ -2714,6 +2725,20 @@ _cairo_ft_load_type1_data (void	            *abstract_font,
     return status;
 }
 
+static cairo_bool_t
+_cairo_ft_has_color_glyphs (void *scaled)
+{
+    cairo_ft_unscaled_font_t *unscaled = ((cairo_ft_scaled_font_t *)scaled)->unscaled;
+
+    if (!unscaled->have_color_set) {
+        FT_Face face;
+        face = _cairo_ft_unscaled_font_lock_face (unscaled);
+        _cairo_ft_unscaled_font_unlock_face (unscaled);
+    }
+
+    return unscaled->have_color;
+}
+
 static const cairo_scaled_font_backend_t _cairo_ft_scaled_font_backend = {
     CAIRO_FONT_TYPE_FT,
     _cairo_ft_scaled_font_fini,
@@ -2724,7 +2749,8 @@ static const cairo_scaled_font_backend_t _cairo_ft_scaled_font_backend = {
     _cairo_ft_index_to_ucs4,
     _cairo_ft_is_synthetic,
     _cairo_index_to_glyph_name,
-    _cairo_ft_load_type1_data
+    _cairo_ft_load_type1_data,
+    _cairo_ft_has_color_glyphs
 };
 
 /* #cairo_ft_font_face_t */
