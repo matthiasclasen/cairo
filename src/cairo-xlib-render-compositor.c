@@ -1216,6 +1216,12 @@ _cairo_xlib_surface_add_glyph (cairo_xlib_display_t *display,
 	already_had_glyph_surface = TRUE;
     }
 
+    if ((glyph->has_info && CAIRO_SCALED_GLYPH_INFO_COLOR_SURFACE) != 0) {
+        TRACE ((stderr, "%s: bailing on color\n", __FUNCTION__));
+        status = CAIRO_INT_STATUS_UNSUPPORTED;
+        goto BAIL;
+    }
+
     info = _cairo_xlib_font_get_glyphset_info_for_format (display, font,
 							  glyph_surface->format);
 
@@ -1722,6 +1728,18 @@ composite_glyphs (void				*surface,
     return status;
 }
 
+static cairo_int_status_t
+glyphs_unsupported (const cairo_compositor_t        *compositor,
+                    cairo_composite_rectangles_t   *extents,
+                    cairo_scaled_font_t            *scaled_font,
+                    cairo_glyph_t                  *glyphs,
+                    int                             num_glyphs,
+                    cairo_bool_t                    overlap)
+{
+    return CAIRO_INT_STATUS_UNSUPPORTED;
+}
+
+
 const cairo_compositor_t *
 _cairo_xlib_mask_compositor_get (void)
 {
@@ -1745,6 +1763,7 @@ _cairo_xlib_mask_compositor_get (void)
 	compositor.composite_boxes = composite_boxes;
 	compositor.check_composite_glyphs = check_composite_glyphs;
 	compositor.composite_glyphs = composite_glyphs;
+        compositor.base.glyphs = glyphs_unsupported;
     }
 
     return &compositor.base;
