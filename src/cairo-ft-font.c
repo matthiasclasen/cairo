@@ -429,7 +429,7 @@ _cairo_ft_unscaled_font_init (cairo_ft_unscaled_font_t *unscaled,
 	unscaled->from_face = TRUE;
 	_cairo_ft_unscaled_font_init_key (unscaled, TRUE, NULL, 0, face);
 
-        unscaled->have_color = FT_HAS_COLOR (face);
+        unscaled->have_color = FT_HAS_COLOR (face) != 0;
         unscaled->have_color_set = TRUE;
     } else {
 	char *filename_copy;
@@ -711,7 +711,7 @@ _cairo_ft_unscaled_font_lock_face (cairo_ft_unscaled_font_t *unscaled)
 
     unscaled->face = face;
 
-    unscaled->have_color = FT_HAS_COLOR (face);
+    unscaled->have_color = FT_HAS_COLOR (face) != 0;
     unscaled->have_color_set = TRUE;
 
     font_map->num_open_faces++;
