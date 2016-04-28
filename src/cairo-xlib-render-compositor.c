@@ -1216,7 +1216,7 @@ _cairo_xlib_surface_add_glyph (cairo_xlib_display_t *display,
 	already_had_glyph_surface = TRUE;
     }
 
-    if ((glyph->has_info && CAIRO_SCALED_GLYPH_INFO_COLOR_SURFACE) != 0) {
+    if ((glyph->has_info & CAIRO_SCALED_GLYPH_INFO_COLOR_SURFACE) != 0) {
         status = CAIRO_INT_STATUS_UNSUPPORTED;
         goto BAIL;
     }
