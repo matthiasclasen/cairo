@@ -445,7 +445,7 @@ _cairo_ft_unscaled_font_init (cairo_ft_unscaled_font_t *unscaled,
 
     if (from_face) {
 	unscaled->from_face = TRUE;
-	_cairo_ft_unscaled_font_init_key (unscaled, TRUE, NULL, face->face_index, face);
+	_cairo_ft_unscaled_font_init_key (unscaled, TRUE, NULL, face ? face->face_index : 0, face);
 
 
         unscaled->have_color = FT_HAS_COLOR (face) != 0;
