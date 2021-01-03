@@ -379,6 +379,8 @@ if cc.has_header('ApplicationServices/ApplicationServices.h')
     quartz_extra_libs = ['-Xlinker', '-framework', '-Xlinker', 'ApplicationServices']
   endif
 
+  quartz_extra_libs += ['-Xlinker', '-framework', '-Xlinker', 'CoreFoundation']
+
   extra_link_args += quartz_extra_libs
 
   feature_conf.set('CAIRO_HAS_QUARTZ_SURFACE', 1)
