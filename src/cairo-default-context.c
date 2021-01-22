@@ -325,8 +325,10 @@ _cairo_default_context_set_source_surface (void *abstract_cr,
     _cairo_default_context_set_source (cr, (cairo_pattern_t *) &_cairo_pattern_black);
 
     pattern = cairo_pattern_create_for_surface (surface);
-    if (unlikely (pattern->status))
+    if (unlikely (pattern->status)) {
+        cairo_pattern_destroy (pattern);
 	return pattern->status;
+    }
 
     cairo_matrix_init_translate (&matrix, -x, -y);
     cairo_pattern_set_matrix (pattern, &matrix);
